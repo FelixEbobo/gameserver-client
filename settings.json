@@ -1,0 +1,13 @@
+{
+  "port": 3233,
+  "items_path": "/Users/aansimov/pets/gameserver-client/gameserver/data/shop_items.json",
+  "db_settings": {
+    "db_type": "mysql",
+    "host": "127.0.0.1",
+    "port": 3306,
+    "user": "root",
+    "password": "q1w2e3r4"
+  },
+  "min_amount_of_money": 10,
+  "max_amount_of_money": 124
+}

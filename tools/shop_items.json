@@ -1,0 +1,52 @@
+[
+  {
+    "name": "whistle",
+    "price": 67,
+    "type": "equipment"
+  },
+  {
+    "name": "ice cube",
+    "price": 22,
+    "type": "equipment"
+  },
+  {
+    "name": "Wichita",
+    "price": 82,
+    "type": "ship"
+  },
+  {
+    "name": "wire",
+    "price": 13,
+    "type": "equipment"
+  },
+  {
+    "name": "washcloth",
+    "price": 38,
+    "type": "equipment"
+  },
+  {
+    "name": "AL Sov. Rossiya",
+    "price": 27,
+    "type": "ship"
+  },
+  {
+    "name": "Chkalov",
+    "price": 16,
+    "type": "ship"
+  },
+  {
+    "name": "Black",
+    "price": 26,
+    "type": "ship"
+  },
+  {
+    "name": "Adriatico",
+    "price": 33,
+    "type": "ship"
+  },
+  {
+    "name": "bench",
+    "price": 74,
+    "type": "equipment"
+  }
+]

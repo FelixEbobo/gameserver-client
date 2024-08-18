@@ -12,7 +12,10 @@ authors = [
 
 dependencies = [
   "pydantic==2.7.4",
-  "colorama==0.4.6",
+  "sqlalchemy[aiomysql]",
+  "sqlalchemy[mypy]",
+  "colorama",
+  "cryptography"
 ]
 
 [project.optional-dependencies]

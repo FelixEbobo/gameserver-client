@@ -1,3 +1,5 @@
 *.egg-info
 venv/
 .vscode/
+
+gameserver/__pycache__

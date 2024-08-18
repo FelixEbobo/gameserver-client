@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Budyonny",
+    "price": 51,
+    "type": "ship"
+  },
+  {
+    "name": "Balao",
+    "price": 49,
+    "type": "ship"
+  },
+  {
+    "name": "Sampson",
+    "price": 24,
+    "type": "ship"
+  },
+  {
+    "name": "Kamikaze",
+    "price": 80,
+    "type": "ship"
+  },
+  {
+    "name": "garbage can",
+    "price": 43,
+    "type": "equipment"
+  },
+  {
+    "name": "racket",
+    "price": 47,
+    "type": "equipment"
+  },
+  {
+    "name": "can of beans",
+    "price": 41,
+    "type": "equipment"
+  },
+  {
+    "name": "garbage can",
+    "price": 98,
+    "type": "equipment"
+  },
+  {
+    "name": "Iwaki Alpha",
+    "price": 87,
+    "type": "ship"
+  },
+  {
+    "name": "Enseigne Gabolde",
+    "price": 50,
+    "type": "ship"
+  }
+]

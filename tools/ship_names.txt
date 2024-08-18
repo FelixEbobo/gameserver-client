@@ -1,0 +1,609 @@
+Black Swan
+Bougainville
+Chengan
+Erie
+Eritrea
+Gryf
+Hashidate
+Hermelin
+Orlan
+Van Kinsbergen
+Mikasa
+Albany
+Almirante Abreu
+Chester
+Chikuma
+Diana
+Diana Lima
+Dresden
+Emden
+Gelderland
+Jurien de la Gravière
+Nino Bixio
+Novik
+Weymouth
+Curtatone
+Enseigne Gabolde
+Longjiang
+Medea
+Sampson
+Smith
+Storozhevoi
+Tachibana
+Tachibana Lima
+Tátra
+Umikaze
+V-25
+Bellerophon
+Dreadnought
+Indefatigable
+Kawachi
+Knyaz Suvorov
+König Albert
+Nassau
+South Carolina
+Turenne
+Von der Tann
+AL Avrora
+Aurora
+Bogatyr
+Caledon
+Charleston
+Friant
+Java
+Katori
+Kolberg
+Oleg
+St. Louis
+Taranto
+Tenryū
+Varyag
+Campbeltown
+Derzki
+Fusilier
+G-101
+Nazario Sauro
+Phra Ruang
+Romulus
+Valkyrie
+Vampire
+Wakatake
+Wickes
+Hermes
+Hōshō
+Komsomolets
+Langley
+Rhein
+Arkansas Beta
+Courbet
+Dante Alighieri
+Gangut
+Imperator Nikolai I
+Ishizuchi
+Kaiser
+Moltke
+Myōgi
+Orion
+Queen Mary
+Wyoming
+Alberto di Giussano
+Córdoba
+Danae
+De Ruyter
+Duguay-Trouin
+Iwaki Alpha
+Karlsruhe
+Kuma
+Phoenix
+Svietlana
+Yūbari
+Bourrasque
+Clemson
+Isokaze
+Izyaslav
+Klas Horn
+Shenyang
+Turbine
+V-170
+Wakeful
+Agincourt
+ARP Haruna
+ARP Hiei
+ARP Kirishima
+ARP Kongō
+Bretagne
+Conte di Cavour
+Derfflinger
+Giulio Cesare
+HSF Hiei
+Iron Duke
+Kongō
+König
+New York
+Oklahoma
+Oktyabrskaya Revolutsiya
+Pyotr Velikiy
+Texas
+Tiger
+Viribus Unitis
+Agano
+Celebes
+Chungking
+Emerald
+Émile Bertin
+Exeter
+Furutaka
+Genova
+Hawkins
+Kirov
+Königsberg
+Kotovsky
+Krasny Krym
+Marblehead
+Marblehead Lima
+Mikoyan
+Murmansk
+Omaha
+Raimondo Montecuccoli
+Yahagi
+Acasta
+Fūjin
+Gremyashchy
+Hill
+Jaguar
+Jianwei
+Kamikaze
+Kamikaze R
+Maestrale
+Minekaze
+Mutsuki
+Nicholas
+Okhotnik
+Podvoisky
+Siroco
+T-22
+Visby
+Ark Royal
+Béarn
+Erich Loewenhardt
+Furious
+Ranger
+Ryūjō
+Serov
+Weser
+Andrea Doria
+Arizona
+Bayern
+Dunkerque
+Dunkerque B
+Fusō
+Ise
+Izmail
+Mackensen
+Mutsu
+New Mexico
+Normandie
+Novorossiysk
+Prinz Eitel Friedrich
+Queen Elizabeth
+Renown
+Repulse
+W. Virginia 1941
+Warspite
+Admiral Graf Spee
+Admiral Makarov
+Aoba
+Budyonny
+Canarias
+Dallas
+De Grasse
+Devonshire
+Dido
+Duca d'Aosta
+Gokase
+HSF Admiral Graf Spee
+Huanghe
+Kijkduin
+La Galissonnière
+Leander
+London
+Molotov
+Mysore
+Nürnberg
+Pensacola
+Perth
+Rahmat
+Trento
+Aigle
+Anshan
+Aviere
+Ernst Gaede
+Farragut
+Fubuki
+Fushun
+Gallant
+Gnevny
+Guépard
+Hatsuharu
+Icarus
+Juruá
+Karl von Schönberg
+Leone
+Monaghan
+Shinonome
+T-61
+Västerås
+Cachalot
+U-69
+Undine
+Ashitaka
+California
+Collingwood
+Colorado
+Duke of York
+Florida
+Francesco Caracciolo
+Gneisenau
+Hood
+Hyūga
+King George V
+Lyon
+Nagato
+Nelson
+Poltava
+Prinz Heinrich
+Renown '44
+Rooke
+Scharnhorst
+Scharnhorst B
+Sinop
+Strasbourg
+Yukon
+Algérie
+ARP Ashigara
+ARP Haguro
+ARP Myōkō
+ARP Nachi
+Atlanta
+Atlanta B
+Belfast
+Boise
+Chumphon
+Duca degli Abruzzi
+Eastern Dragon
+Eendracht
+Fiji
+Flint
+Gorizia
+Helena
+Indianapolis
+Lazo
+München
+Myōkō
+New Orleans
+Nueve de Julio
+Omono
+Shchors
+Southern Dragon
+Surrey
+Tokachi
+Toulon
+Weimar
+Yorck
+Zara
+Akatsuki
+Błyskawica
+FR25
+Gadjah Mada
+Haida
+Huron
+Jervis
+Leberecht Maass
+Leningrad
+Luca Tarigo
+Mahan
+Minsk
+Shiratsuyu
+Sims
+Sims B
+Skåne
+Vauquelin
+Yūdachi
+Z-31
+Z-39
+Aquila
+August von Parseval
+Chkalov
+Enterprise
+Graf Zeppelin
+Graf Zeppelin B
+Hornet
+Implacable
+Indomitable
+Kaga
+Kaga B
+Lexington
+Pobeda
+Saipan
+Saipan B
+Sanzang
+Shōkaku
+AL Littorio
+Alabama
+Alabama ST
+Alabama VL
+Amagi
+Anhalt
+Atlântico
+Bismarck
+Borodino
+Brandenburg
+Champagne
+Constellation
+Flandre
+Gascogne
+Hawke
+Ignis Purgatio
+Kansas
+Kii
+Lenin
+Massachusetts
+Massachusetts B
+Monarch
+Nebraska
+North Carolina
+Odin
+Ragnarok
+Richelieu
+Roma
+Tirpitz
+Tirpitz B
+Vanguard
+Vittorio Veneto
+Vladivostok
+Zieten
+Admiral Hipper
+AL Montpelier
+Albemarle
+Amalfi
+Anchorage
+ARP Maya
+ARP Takao
+Atago
+Atago B
+Baltimore
+Bayard
+Belfast '43
+Chapayev
+Charles Martel
+Cherbourg
+Cheshire
+Cleveland
+Congress
+Cross of Dorn
+De Zeven Provinciën
+Edinburgh
+Haarlem
+Hampshire
+Harbin
+Irian
+Mainz
+Mikhail Kutuzov
+Mogami
+Ochakov
+Prinz Eugen
+Pyotr Bagration
+Rochester
+San Diego
+Shimanto
+Tallinn
+Tiger '59
+Tone
+Wichita
+Wukong
+Akizuki
+AL Yukikaze
+Asashio
+Asashio B
+Benson
+Cossack
+Cossack B
+Fenyang
+G. J. Maerker
+HSF Harekaze
+HSF Harekaze II
+Hsienyang
+Kagerō
+Kidd
+Kiev
+Le Fantasque
+Le Terrible
+Lightning
+Loyang
+Loyang B
+Ognevoi
+Öland
+Orkan
+Ship Smasha
+Siliwangi
+Vittorio Cuniberti
+Z-23
+Z-35
+Alliance
+I-56
+S-189
+Salmon
+Sturdy
+U-190
+AL Sov. Rossiya
+Alsace
+Bajie
+Delaware
+Duncan
+Friedrich der Grosse
+Georgia
+Giuseppe Verdi
+Hizen
+Iowa
+Iwami
+Izumo
+Jean Bart
+Jean Bart B
+Kearsarge
+Lepanto
+Lion
+Marco Polo
+Marlborough
+Minnesota
+Missouri
+Musashi
+Pommern
+Pommern B
+Prinz Rupprecht
+Sovetsky Soyuz
+Sun Yat-Sen
+Wujing
+Admiral Schröder
+Ägir
+AL Azuma
+Alaska
+Alaska B
+Azuma
+Brest
+Brindisi
+Buffalo
+Carnot
+Dalian
+Dmitri Donskoi
+Drake
+Hector
+Ibuki
+Johan de Witt
+Kronshtadt
+Neptune
+Riga
+Roon
+Saint-Louis
+Seattle
+Sejong
+Siegfried
+Takahashi
+Tulsa
+Vallejo
+Adriatico
+Benham
+Black
+Chung Mu
+Felix Schultz
+Fletcher
+Friesland
+Groningen
+Jutland
+Kitakaze
+Mogador
+Neustrashimy
+Östergötland
+Paolo Emilio
+Tashkent
+Udaloi
+Velos
+Yūgumo
+Z-44
+Z-46
+ZF-6
+Admiral Nakhimov
+Audacious
+Franklin D. Roosevelt
+Hakuryū
+Malta
+Manfred von Richthofen
+Max Immelmann
+Midway
+ARP Yamato
+Bourgogne
+Conqueror
+Cristoforo Colombo
+Grosser Kurfürst
+Incomparable
+Kremlin
+Louisiana
+Mecklenburg
+Montana
+Ohio
+Preussen
+République
+Schlieffen
+Shikishima
+Slava
+St. Vincent
+Thunderer
+Vermont
+Yamato
+Alexander Nevsky
+Austin
+Colbert
+Des Moines
+Gibraltar
+Goliath
+Gouden Leeuw
+Henri IV
+Hindenburg
+Jinan
+Marseille
+Minotaur
+Moskva
+Napoli
+Petropavlovsk
+Plymouth
+Puerto Rico
+Salem
+Sevastopol
+Smolensk
+Stalingrad
+Venezia
+Worcester
+Yodo
+Yoshino
+Yoshino B
+Zaō
+Álvaro de Bazán
+Attilio Regolo
+Daring
+Delny
+Druid
+Elbing
+Forrest Sherman
+Gearing
+Grozovoi
+Halland
+Harugumo
+Hayate
+Khabarovsk
+Kléber
+Marceau
+Ragnar
+Shimakaze
+Småland
+Somers
+Tromp
+Vampire II
+Yueyang
+Z-42
+Z-52
+Balao
+Thrasher
+U-2501
+Eagle
+Sekiryu
+United States
+Admiral Ushakov
+Hannover
+Patrie
+Satsuma
+Annapolis
+Clausewitz
+Condé
+Edgar
+Dalarna
+Yamagiri
+Zorkiy
