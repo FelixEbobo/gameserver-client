@@ -1,7 +1,6 @@
 from decimal import Decimal
 from pydantic import BaseModel, Field
 from db.settings import DBSettings
-import random
 
 class ServerSettings(BaseModel):
     port: int = Field(gt=0)
@@ -12,7 +11,7 @@ class ServerSettings(BaseModel):
 
 
 def load_settings() -> ServerSettings:
-    with open("settings.json") as f:
+    with open("settings.json", "r", encoding="utf-8") as f:
         return ServerSettings.model_validate_json(f.read())
 
 

@@ -5,7 +5,7 @@ from sqlalchemy import String, Enum, Uuid, DateTime, ForeignKey, Numeric, Unique
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.sql import func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from gameserver.models import ShopItemType, ShopItem
+from gameserver.misc.models import ShopItemType, ShopItem
 
 
 #  Do not put id column definition, as it gets dragged to the end in DBMS. Embrace breaking DRY

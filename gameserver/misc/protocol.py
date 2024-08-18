@@ -4,7 +4,7 @@ import json
 
 from pydantic import BaseModel, UUID4
 
-from gameserver.models import ActionType, ItemRequest, AccountLoginRequest, GameSessionData, ShopItemList, ErrorResponse, BasicResponse
+from gameserver.misc.models import ActionType, ItemRequest, AccountLoginRequest, GameSessionData, ShopItemList, ErrorResponse, BasicResponse
 
 class ProtocolRequest(BaseModel):
     action_type: ActionType

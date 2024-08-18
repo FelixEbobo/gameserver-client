@@ -1,69 +1,15 @@
 import asyncio
-from typing import List, AsyncGenerator
 import logging
-import uuid
 import random
-from io import BytesIO
+from typing import List
+import uuid
 
-from pydantic import ValidationError
-
-from db.manager import DBManager
-from misc.settings import validate_settings
-from gameserver.models import ErrorResponse, ShopItemList, AccountLoginRequest, GameSessionData, ActionType, BasicResponse, ItemRequest
+from gameserver.db.manager import DBManager
+from gameserver.misc.settings import validate_settings
+from gameserver.misc.models import ErrorResponse, ShopItemList, AccountLoginRequest, GameSessionData, ActionType, BasicResponse, ItemRequest
 from gameserver.misc import errors
-from gameserver.protocol import Protocol, ProtocolRequest, ProtocolResponse
-
-class Connection:
-    def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
-        self.reader = reader
-        self.writer = writer
-
-    async def listen(self) -> AsyncGenerator[bytes, None]:
-        msglen = 0
-        readlen = 0
-        message = BytesIO()
-        logging.debug("Begin reading")
-        while True:
-            msg = await self.reader.read(Protocol.CHUNK_SIZE)
-            if self.reader.at_eof():
-                break
-            logging.debug("Read chunk")
-
-            if len(msg) < Protocol.HEADER_TOTAL_SIZE:
-                await self.send_bad_request()
-                continue
-            if not msg[:Protocol.HEADER_SIZE].rstrip().isdigit():
-                await self.send_bad_request()
-                continue
-
-            msglen = int(msg[:Protocol.HEADER_SIZE])
-            readlen += message.write(msg[Protocol.HEADER_TOTAL_SIZE:])
-            while readlen < msglen:
-                msg = await self.reader.read(Protocol.CHUNK_SIZE)
-                readlen += message.write(msg)
-
-            message.seek(0)
-            readlen = 0
-            msglen = 0
-            try:
-                parsed_data = Protocol.parse(message.read())
-                yield ProtocolRequest.model_validate(parsed_data)
-            except ValidationError:
-                await self.send_bad_request()
-
-    async def close(self) -> None:
-        self.writer.write_eof()
-        await self.writer.drain()
-        await self.writer.wait_closed()
-
-    async def send_bad_request(self) -> None:
-        error = ErrorResponse.from_base_gameserver_exception(errors.BadRequest())
-        self.writer.write(Protocol.construct(error.model_dump()))
-        await self.writer.drain()
-
-    async def send(self, response: ProtocolResponse) -> None:
-        self.writer.write(Protocol.construct(response.model_dump()))
-        await self.writer.drain()
+from gameserver.misc.protocol import Protocol, ProtocolRequest, ProtocolResponse
+from gameserver.misc.connection import Connection
 
 class Server:
     def __init__(self) -> None:
@@ -196,7 +142,7 @@ class Server:
 
     async def logout_from_account(self, session_uuid: uuid.UUID) -> BasicResponse:
         async with self.db.sessionmaker() as session:
-            await self.db.delete_account_session(session_uuid)
+            await self.db.delete_account_session(session, session_uuid)
         return BasicResponse()
 
     async def buy_shop_item(self, session_uuid: uuid.UUID, params: ItemRequest) -> BasicResponse:
@@ -225,22 +171,3 @@ class Server:
             await session.commit()
 
         return BasicResponse()
-
-
-async def main():
-    import signal
-    async with Server() as server:
-        loop = asyncio.get_running_loop()
-
-        # Dirty hack to run forever, as we don't have other work than to wait until server shutdown
-        infinite_furute = loop.create_future()
-        loop.add_signal_handler(signal.SIGINT, infinite_furute.cancel)
-        loop.add_signal_handler(signal.SIGTERM, infinite_furute.cancel)
-        try:
-            await infinite_furute
-        except asyncio.CancelledError:
-            infinite_furute = None
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
-    asyncio.run(main())

@@ -28,6 +28,14 @@ class Unathorized(BaseGameServerException):
             value
         )
 
+class UnknownActionType(BaseGameServerException):
+    def __init__(self, value: Optional[str] = None):
+        super().__init__(
+            "Unknown action type",
+            1002,
+            value
+        )
+
 # 51 - 100 - Account errors
 
 class AccountAlreadyExists(BaseGameServerException):

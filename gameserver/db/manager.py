@@ -4,12 +4,13 @@ import uuid
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncEngine
-from db.settings import DBSettings
-from db.models import tables
 
-from gameserver.models import ShopItem
+from gameserver.misc.models import ShopItem
+from gameserver.misc import errors
 
-from misc import errors
+from gameserver.db.settings import DBSettings
+from gameserver.db import tables
+
 
 class DBManager:
     def __init__(self, settings: DBSettings) -> None:
