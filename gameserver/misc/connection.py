@@ -1,12 +1,13 @@
 import logging
 import asyncio
-from typing import AsyncGenerator, Dict, Any
+from typing import AsyncGenerator
 from io import BytesIO
 from pydantic import ValidationError
 
 from gameserver.misc.models import ErrorResponse
 from gameserver.misc.protocol import Protocol, ProtocolResponse
 from gameserver.misc import errors
+
 
 class Connection:
     def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
@@ -29,13 +30,13 @@ class Connection:
                 await self.send_bad_request()
                 message.truncate(0)
                 continue
-            if not msg[:Protocol.HEADER_SIZE].rstrip().isdigit():
+            if not msg[: Protocol.HEADER_SIZE].rstrip().isdigit():
                 await self.send_bad_request()
                 message.truncate(0)
                 continue
 
-            msglen = int(msg[:Protocol.HEADER_SIZE])
-            readlen += message.write(msg[Protocol.HEADER_TOTAL_SIZE:])
+            msglen = int(msg[: Protocol.HEADER_SIZE])
+            readlen += message.write(msg[Protocol.HEADER_TOTAL_SIZE :])
             while readlen < msglen:
                 msg = await self.reader.read(Protocol.CHUNK_SIZE)
                 readlen += message.write(msg)

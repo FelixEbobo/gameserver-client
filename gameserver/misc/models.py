@@ -2,10 +2,12 @@ from decimal import Decimal
 import enum
 from typing import List, Optional, Generator, Union, Literal, Dict
 
-from gameserver.misc.errors import BaseGameServerException
 from pydantic import BaseModel, RootModel, Field, UUID4
 
+from gameserver.misc.errors import BaseGameServerException
+
 # Requests
+
 
 class ActionType(str, enum.Enum):
     GET_ALL_ITEM_LIST = "get_all_item_list"
@@ -15,23 +17,29 @@ class ActionType(str, enum.Enum):
     BUY_ITEM = "buy_item"
     SELL_ITEM = "sell_item"
 
+
 class ItemRequest(BaseModel):
     item_uuid: UUID4
+
 
 class AccountLoginRequest(BaseModel):
     nickname: str = Field(max_length=12)
 
+
 # Responses
+
 
 class ShopItemType(str, enum.Enum):
     SHIP = "ship"
     EQUIPMENT = "equipment"
+
 
 class ShopItem(BaseModel):
     uuid: Optional[UUID4] = Field(default=None)
     name: str
     price: int
     type: ShopItemType
+
 
 class ShopItemList(RootModel):
     root: List[ShopItem]
@@ -58,8 +66,10 @@ class ShopItemList(RootModel):
     def __len__(self) -> int:
         return len(self.root)
 
+
 class BasicResponse(BaseModel):
     status: Literal["ok"]
+
 
 class GameSessionData(BaseModel):
     account_uuid: UUID4
@@ -68,6 +78,7 @@ class GameSessionData(BaseModel):
     session_uuid: UUID4
     owned_items: ShopItemList
 
+
 class ErrorResponse(BaseModel):
     error_code: int
     message: str
@@ -75,11 +86,7 @@ class ErrorResponse(BaseModel):
 
     @staticmethod
     def from_base_gameserver_exception(exception: BaseGameServerException):
-        return ErrorResponse(
-            error_code=exception.code,
-            message=exception.message,
-            value=exception.value
-        )
+        return ErrorResponse(error_code=exception.code, message=exception.message, value=exception.value)
 
     def __str__(self) -> str:
         value = " " + str(self.value) if self.value else ""

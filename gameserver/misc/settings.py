@@ -2,13 +2,14 @@ from decimal import Decimal
 from pydantic import BaseModel, Field
 from gameserver.db import DBSettings
 
+
 class ServerSettings(BaseModel):
     host: str
     port: int = Field(gt=0)
     items_path: str
     db_settings: DBSettings
-    min_amount_of_money: Decimal = Field(gt=.0, decimal_places=2)
-    max_amount_of_money: Decimal = Field(gt=.0, decimal_places=2)
+    min_amount_of_money: Decimal = Field(gt=0.0, decimal_places=2)
+    max_amount_of_money: Decimal = Field(gt=0.0, decimal_places=2)
 
 
 def load_settings() -> ServerSettings:

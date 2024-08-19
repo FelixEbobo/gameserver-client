@@ -15,12 +15,14 @@ Please, choose desired action:
 7) Logout
 """
 
+
 def check_if_error_recieved(response) -> bool:
     if isinstance(response, ErrorResponse):
         logging.error("Error had occured!")
         logging.error(str(response))
         return True
     return False
+
 
 def print_separator() -> None:
     print()
@@ -30,9 +32,10 @@ def print_separator() -> None:
 
 def print_item_description(shop_item: ShopItem, index: int, owned: bool = False):
     msg = f"{index + 1}) Item name: {shop_item.name}. Price: {shop_item.price}"
-    if owned: #  Check if item is owned by the account
+    if owned:  #  Check if item is owned by the account
         msg += ". Owned"
     print(msg)
+
 
 async def view_shop_items(client: Client) -> ShopItemList:
     response = await client.send_get_all_items_request()
@@ -47,6 +50,7 @@ async def view_shop_items(client: Client) -> ShopItemList:
 
     return response
 
+
 def view_purchased_items(client: Client):
     owned_items = client.game_session.owned_items
     if len(owned_items) == 0:
@@ -55,6 +59,7 @@ def view_purchased_items(client: Client):
 
     for index, shop_item in enumerate(owned_items):
         print_item_description(shop_item, index)
+
 
 async def buy_item(client: Client):
     # Refresh to get actual information at the moment
@@ -67,13 +72,13 @@ async def buy_item(client: Client):
             return
 
         if not buy_option.isdigit() or int(buy_option) < 1 or int(buy_option) > len(shop_item_list):
-            logging.error(f"Your selection should be number within 1-{len(shop_item_list)} range.")
+            logging.error("Your selection should be number within 1-%d range.", len(shop_item_list))
             continue
 
         shop_item_index = int(buy_option) - 1
         owned_items_dict = client.game_session.owned_items.as_dict()
-        if (owned_items_dict.get(str(shop_item_list.at(shop_item_index).uuid))):
-            logging.error(f"Your selection should be number within 1-{len(shop_item_list)} range.")
+        if owned_items_dict.get(str(shop_item_list.at(shop_item_index).uuid)):
+            logging.error("You already have this item")
             continue
         break
 
@@ -97,7 +102,7 @@ async def sell_item(client: Client):
             return
 
         if not buy_option.isdigit() or int(buy_option) < 1 or int(buy_option) > len(owned_items):
-            logging.error(f"Your selection should be number within 1-{len(owned_items)} range.")
+            logging.error("Your selection should be number within 1-%d range.", len(owned_items))
             continue
 
         shop_item_index = int(buy_option) - 1
@@ -140,7 +145,9 @@ async def process_menu_option(client: Client, menu_option: int):
 
 async def main_menu_loop(client: Client):
     while True:
-        print(f"Currently logged in as: {client.game_session.nickname}, session: {str(client.game_session.session_uuid)}")
+        print(
+            f"Currently logged in as: {client.game_session.nickname}, session: {str(client.game_session.session_uuid)}"
+        )
         print(MENU_STRING)
 
         menu_option = input("Your choise: ")
@@ -152,6 +159,7 @@ async def main_menu_loop(client: Client):
         await process_menu_option(client, menu_option_int)
         if menu_option_int == 7:
             break
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
@@ -169,6 +177,7 @@ def parse_args() -> argparse.Namespace:
 
     return parser.parse_args()
 
+
 async def main(args: argparse.Namespace):
     logging.info("Welcome to basic Ship Economy game")
     async with Client(args.host, args.port) as client:
@@ -179,7 +188,7 @@ async def main(args: argparse.Namespace):
 
         await main_menu_loop(client)
 
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    args = parse_args()
-    asyncio.run(main(args))
+    asyncio.run(main(parse_args()))

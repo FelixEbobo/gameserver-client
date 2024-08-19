@@ -1,12 +1,12 @@
 import asyncio
 import logging
 from typing import Union
-import json
 import uuid
 
 from gameserver.misc.connection import Connection
 from gameserver.misc.protocol import Protocol, ProtocolRequest, ProtocolResponse, BasicResponse, ErrorResponse
 from gameserver.misc.models import ActionType, AccountLoginRequest, GameSessionData, ItemRequest, ShopItemList
+
 
 class Client:
     def __init__(self, host: str, port: int) -> None:
@@ -26,7 +26,7 @@ class Client:
         await self.connection.close()
 
     async def send_request(self, request: ProtocolRequest):
-        bytes_message = Protocol.construct(request.model_dump(mode='json'))
+        bytes_message = Protocol.construct(request.model_dump(mode="json"))
         await self.connection.send(bytes_message)
 
     async def get_response(self) -> ProtocolResponse:
@@ -38,7 +38,9 @@ class Client:
         return response
 
     async def send_login_request(self, nickname: str) -> Union[GameSessionData, ErrorResponse]:
-        request = ProtocolRequest(action_type=ActionType.LOGIN, session_uuid=None, data=AccountLoginRequest(nickname=nickname))
+        request = ProtocolRequest(
+            action_type=ActionType.LOGIN, session_uuid=None, data=AccountLoginRequest(nickname=nickname)
+        )
         await self.send_request(request)
 
         response = await self.get_response()
@@ -58,7 +60,11 @@ class Client:
 
     async def send_buy_request(self, item_uuid: uuid.UUID) -> Union[BasicResponse, ErrorResponse]:
         assert self.game_session
-        request = ProtocolRequest(action_type=ActionType.BUY_ITEM, session_uuid=self.game_session.session_uuid, data=ItemRequest(item_uuid=item_uuid))
+        request = ProtocolRequest(
+            action_type=ActionType.BUY_ITEM,
+            session_uuid=self.game_session.session_uuid,
+            data=ItemRequest(item_uuid=item_uuid),
+        )
         await self.send_request(request)
 
         response = await self.get_response()
@@ -66,7 +72,11 @@ class Client:
 
     async def send_sell_request(self, item_uuid: uuid.UUID) -> Union[BasicResponse, ErrorResponse]:
         assert self.game_session
-        request = ProtocolRequest(action_type=ActionType.SELL_ITEM, session_uuid=self.game_session.session_uuid, data=ItemRequest(item_uuid=item_uuid))
+        request = ProtocolRequest(
+            action_type=ActionType.SELL_ITEM,
+            session_uuid=self.game_session.session_uuid,
+            data=ItemRequest(item_uuid=item_uuid),
+        )
         await self.send_request(request)
 
         response = await self.get_response()
@@ -75,7 +85,9 @@ class Client:
     async def send_get_all_items_request(self) -> Union[ShopItemList, ErrorResponse]:
         logging.debug("Sending get items info request")
         assert self.game_session
-        request = ProtocolRequest(action_type=ActionType.GET_ALL_ITEM_LIST, session_uuid=self.game_session.session_uuid, data=None)
+        request = ProtocolRequest(
+            action_type=ActionType.GET_ALL_ITEM_LIST, session_uuid=self.game_session.session_uuid, data=None
+        )
         logging.debug(request)
         await self.send_request(request)
 
@@ -84,7 +96,9 @@ class Client:
 
     async def refresh_game_session(self) -> Union[GameSessionData, ErrorResponse]:
         assert self.game_session
-        request = ProtocolRequest(action_type=ActionType.GET_GAME_DATA_SESSION, session_uuid=self.game_session.session_uuid, data=None)
+        request = ProtocolRequest(
+            action_type=ActionType.GET_GAME_DATA_SESSION, session_uuid=self.game_session.session_uuid, data=None
+        )
         await self.send_request(request)
 
         response = await self.get_response()

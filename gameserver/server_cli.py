@@ -1,10 +1,11 @@
 import asyncio
 import logging
+import signal
 from gameserver.server import Server
 
+
 async def main():
-    import signal
-    async with Server() as server:
+    async with Server():
         loop = asyncio.get_running_loop()
 
         # Dirty hack to run forever, as we don't have other work than to wait until server shutdown
@@ -15,6 +16,7 @@ async def main():
             await infinite_furute
         except asyncio.CancelledError:
             infinite_furute = None
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

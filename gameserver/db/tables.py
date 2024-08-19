@@ -9,12 +9,8 @@ from gameserver.misc.models import ShopItemType, ShopItem
 
 
 #  Do not put id column definition, as it gets dragged to the end in DBMS. Embrace breaking DRY
-class BaseTable(AsyncAttrs, DeclarativeBase):
-
-    __table_args__ = {
-        "mysql_engine": 'InnoDB',
-        "mysql_charset": 'utf8mb4'
-    }
+class BaseTable(AsyncAttrs, DeclarativeBase): #  pylint: disable=too-few-public-methods
+    __table_args__ = {"mysql_engine": "InnoDB", "mysql_charset": "utf8mb4"}
 
 
 class DBShopItem(BaseTable):
@@ -29,14 +25,10 @@ class DBShopItem(BaseTable):
     UniqueConstraint(type, name, price, name="uix_1")
 
     def to_shop_item_model(self) -> ShopItem:
-        return ShopItem(
-            uuid=self.uuid,
-            name=self.name,
-            type=self.type,
-            price=self.price
-        )
+        return ShopItem(uuid=self.uuid, name=self.name, type=self.type, price=self.price)
 
 
+#  pylint: disable=too-few-public-methods
 class DBAccount(BaseTable):
     __tablename__ = "gm_account"
 
@@ -45,24 +37,26 @@ class DBAccount(BaseTable):
     nickname: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
 
 
+#  pylint: disable=too-few-public-methods
 class DBAccountSession(BaseTable):
     __tablename__ = "gm_account_session"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     uuid: Mapped[Uuid] = mapped_column(Uuid, unique=True, nullable=False, default=uuid.uuid4)
-    created: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=False), server_default=func.now())
+    created: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=False), server_default=func.now()) #  pylint: disable=not-callable
     account: Mapped[int] = mapped_column(ForeignKey(DBAccount.id))
 
 
 #  Make balance separate table as in real world you probably take billing data from another service
-class DBAccountBalance(BaseTable):
+class DBAccountBalance(BaseTable): #  pylint: disable=too-few-public-methods
     __tablename__ = "gm_account_balance"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     account: Mapped[int] = mapped_column(ForeignKey(DBAccount.id), unique=True)
-    balance: Mapped[float] = mapped_column(Numeric(precision=10, scale=2, asdecimal=False), default=.0)
+    balance: Mapped[float] = mapped_column(Numeric(precision=10, scale=2, asdecimal=False), default=0.0)
 
 
+#  pylint: disable=too-few-public-methods
 class DBShopItem2Account(BaseTable):
     __tablename__ = "gm_shop_item2account"
 

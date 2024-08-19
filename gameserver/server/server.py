@@ -5,10 +5,19 @@ import uuid
 
 from gameserver.db.manager import DBManager
 from gameserver.misc.settings import validate_settings
-from gameserver.misc.models import ErrorResponse, ShopItemList, AccountLoginRequest, GameSessionData, ActionType, BasicResponse, ItemRequest
+from gameserver.misc.models import (
+    ErrorResponse,
+    ShopItemList,
+    AccountLoginRequest,
+    GameSessionData,
+    ActionType,
+    BasicResponse,
+    ItemRequest,
+)
 from gameserver.misc import errors
 from gameserver.misc.protocol import Protocol, ProtocolRequest, ProtocolResponse
 from gameserver.misc.connection import Connection
+
 
 class Server:
     def __init__(self) -> None:
@@ -19,7 +28,7 @@ class Server:
         self.db = DBManager(self._settings.db_settings)
 
     def __get_items_data(self) -> ShopItemList:
-        with open(self._settings.items_path) as f:
+        with open(self._settings.items_path, encoding="utf-8") as f:
             return ShopItemList.model_validate_json(f.read())
 
     async def add_new_data_to_items(self, shop_items: ShopItemList) -> None:
@@ -92,6 +101,8 @@ class Server:
             result = await self.get_all_shop_items()
         elif request.action_type == ActionType.GET_GAME_DATA_SESSION:
             result = await self.get_game_session_data(request.session_uuid)
+        else:
+            result = ProtocolResponse(data=ErrorResponse.from_base_gameserver_exception(errors.UnknownActionType()))
 
         return ProtocolResponse(data=result)
 
@@ -123,12 +134,11 @@ class Server:
                 session,
                 params.nickname,
                 float(self._settings.min_amount_of_money),
-                float(self._settings.max_amount_of_money)
+                float(self._settings.max_amount_of_money),
             )
             account_session = await self.db.create_account_session(session, account)
 
         return await self.get_game_session_data(account_session.uuid)
-
 
     async def get_game_session_data(self, session_uuild: uuid.UUID) -> GameSessionData:
         async with self.db.sessionmaker() as session:
@@ -145,7 +155,7 @@ class Server:
             nickname=account.nickname,
             balance=balance.balance,
             session_uuid=session_uuild,
-            owned_items=result
+            owned_items=result,
         )
 
     async def logout_from_account(self, session_uuid: uuid.UUID) -> BasicResponse:

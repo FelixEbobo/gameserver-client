@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from pydantic.networks import IPvAnyAddress
 
+
 class DBSettings(BaseModel):
     db_type: str
     host: IPvAnyAddress
