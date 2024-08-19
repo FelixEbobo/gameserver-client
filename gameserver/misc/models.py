@@ -45,11 +45,21 @@ class ShopItemList(RootModel):
             result[str(shop_item.uuid)] = shop_item
         return result
 
+    # Probably should've used mixins
+    def at(self, index: int) -> ShopItem:
+        return self.root[index]
+
+    def remove(self, value: ShopItem) -> None:
+        self.root.remove(value)
+
     def __iter__(self) -> Generator[ShopItem, None, None]:
         yield from self.root
 
+    def __len__(self) -> int:
+        return len(self.root)
+
 class BasicResponse(BaseModel):
-    status: Literal["ok"] = Field(default="ok")
+    status: Literal["ok"]
 
 class GameSessionData(BaseModel):
     account_uuid: UUID4
@@ -61,7 +71,7 @@ class GameSessionData(BaseModel):
 class ErrorResponse(BaseModel):
     error_code: int
     message: str
-    value: Union[str, int, None]
+    value: Union[str, int, float, None]
 
     @staticmethod
     def from_base_gameserver_exception(exception: BaseGameServerException):
@@ -72,5 +82,5 @@ class ErrorResponse(BaseModel):
         )
 
     def __str__(self) -> str:
-        value = " " + self.value if self.value else ""
+        value = " " + str(self.value) if self.value else ""
         return f"Error code: {self.error_code}. Message: {self.message}{value}"

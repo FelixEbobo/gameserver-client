@@ -24,7 +24,7 @@ class Client:
 
     async def __aexit__(self, exc_type, exc_value, exc_tb):
         await self.connection.close()
-    
+
     async def send_request(self, request: ProtocolRequest):
         bytes_message = Protocol.construct(request.model_dump(mode='json'))
         await self.connection.send(bytes_message)
@@ -33,8 +33,7 @@ class Client:
         async for message in self.connection.listen():
             logging.debug("Got a response from server")
             logging.debug(message)
-            response = ProtocolResponse.model_validate_json(message)
-            logging.debug("PARSED")
+            response = ProtocolResponse.model_validate_json(message, strict=True)
             break
         return response
 
@@ -43,7 +42,9 @@ class Client:
         await self.send_request(request)
 
         response = await self.get_response()
-        if not isinstance(response.data, ErrorResponse):
+        logging.debug(response)
+        assert not isinstance(response.data, BasicResponse)
+        if isinstance(response.data, GameSessionData):
             self.game_session = response.data
 
     async def send_logout_request(self) -> Union[BasicResponse, ErrorResponse]:
@@ -81,11 +82,11 @@ class Client:
         response = await self.get_response()
         return response.data
 
-    async def refresh_game_session(self) -> Union[ErrorResponse, None]:
+    async def refresh_game_session(self) -> Union[GameSessionData, ErrorResponse]:
         assert self.game_session
         request = ProtocolRequest(action_type=ActionType.GET_GAME_DATA_SESSION, session_uuid=self.game_session.session_uuid, data=None)
         await self.send_request(request)
 
         response = await self.get_response()
-        if not isinstance(response.data, ErrorResponse):
+        if isinstance(response.data, GameSessionData):
             self.game_session = response.data

@@ -35,7 +35,8 @@ async def test_logout():
 
 @pytest.mark.asyncio
 async def test_get_all_items(caplog):
-    caplog.set_level(logging.DEBUG)
+    caplog.set_level(logging.WARNING) #  Change if you need more detailed logging
+
     async with Server() as server:
         async with Client(server._settings.host, server._settings.port) as client:
             nickname = "rickastley"
@@ -45,5 +46,3 @@ async def test_get_all_items(caplog):
             assert_that(client.game_session, not_none())
 
             await client.send_get_all_items_request()
-
-            await client.connection.close()

@@ -1,6 +1,7 @@
 import logging
 from typing import List, Optional
 import uuid
+import random
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncEngine
@@ -86,6 +87,18 @@ class DBManager:
 
     # Work with Account
 
+    async def find_or_create_account(self, session: AsyncSession, nickname: str, min_money: float, max_money: float) -> tables.DBAccount:
+        account = await self.find_account_by_nickname(session, nickname)
+        if account:
+            return account
+
+        account = await self.create_account(session, nickname)
+        await self.create_balance_record_for_account(session, account)
+        random_balance = round(random.uniform(min_money, max_money), 2)
+        await self.add_balance_to_account(session, account, random_balance)
+
+        return account
+
     async def create_account(self, session: AsyncSession, nickname: str) -> tables.DBAccount:
         if (await session.execute(select(tables.DBAccount).where(tables.DBAccount.nickname == nickname))).scalar():
             raise errors.AccountAlreadyExists(nickname)
@@ -144,7 +157,7 @@ class DBManager:
             raise errors.AccountBalanceNotFound(account.id)
 
         if account_balance.balance < amount:
-            raise errors.NotEnoughFundsInAccountBalance(account.id)
+            raise errors.NotEnoughFundsInAccountBalance(amount)
 
         account_balance.balance = float(account_balance.balance) - amount
         await session.flush()

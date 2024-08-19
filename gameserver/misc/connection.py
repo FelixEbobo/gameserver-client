@@ -5,13 +5,14 @@ from io import BytesIO
 from pydantic import ValidationError
 
 from gameserver.misc.models import ErrorResponse
-from gameserver.misc.protocol import Protocol
+from gameserver.misc.protocol import Protocol, ProtocolResponse
 from gameserver.misc import errors
 
 class Connection:
     def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
         self.reader = reader
         self.writer = writer
+        self.is_closed = False
 
     async def listen(self) -> AsyncGenerator[bytes, None]:
         msglen = 0
@@ -21,16 +22,16 @@ class Connection:
         while True:
             msg = await self.reader.read(Protocol.CHUNK_SIZE)
             if self.reader.at_eof():
-                self.writer.write_eof()
-                await self.writer.drain()
                 break
             logging.debug("Read chunk")
 
             if len(msg) < Protocol.HEADER_TOTAL_SIZE:
                 await self.send_bad_request()
+                message.truncate(0)
                 continue
             if not msg[:Protocol.HEADER_SIZE].rstrip().isdigit():
                 await self.send_bad_request()
+                message.truncate(0)
                 continue
 
             msglen = int(msg[:Protocol.HEADER_SIZE])
@@ -47,17 +48,25 @@ class Connection:
                 yield parsed_bytes
             except ValidationError:
                 await self.send_bad_request()
-            message.truncate(0)
+            finally:
+                message.truncate(0)
 
     async def close(self) -> None:
-        self.reader.feed_eof()
-        self.writer.write_eof()
-        await self.writer.drain()
+        if self.is_closed:
+            return
+
+        try:
+            self.reader.feed_eof()
+            self.writer.write_eof()
+            await self.writer.drain()
+        except ConnectionResetError:
+            pass
         self.writer.close()
         await self.writer.wait_closed()
+        self.is_closed = True
 
     async def send_bad_request(self) -> None:
-        error = ErrorResponse.from_base_gameserver_exception(errors.BadRequest())
+        error = ProtocolResponse(data=ErrorResponse.from_base_gameserver_exception(errors.BadRequest()))
         self.writer.write(Protocol.construct(error.model_dump()))
         await self.writer.drain()
 

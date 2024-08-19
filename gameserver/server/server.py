@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import random
 from typing import List
 import uuid
 
@@ -67,16 +66,18 @@ class Server:
             logging.debug("Got a new message")
             logging.debug(message)
             request = ProtocolRequest.model_validate_json(message)
-            logging.debug(request)
             try:
                 response = await self.action_dispatcher(request)
             except errors.BaseGameServerException as e:
-                response = ErrorResponse.from_base_gameserver_exception(e)
+                response = ProtocolResponse(data=ErrorResponse.from_base_gameserver_exception(e))
 
             await conn.send(Protocol.construct(response.model_dump()))
 
+        logging.info("Connection closed, removing it from sessions")
+        await conn.close()
         self._sessions.remove(conn)
 
+    # It would be better if Dispatcher was a class, where you can register handler using decorator
     async def action_dispatcher(self, request: ProtocolRequest) -> ProtocolResponse:
         logging.info("Dispatching action %s", request.action_type.value)
         if request.action_type == ActionType.LOGIN:
@@ -90,7 +91,7 @@ class Server:
         elif request.action_type == ActionType.GET_ALL_ITEM_LIST:
             result = await self.get_all_shop_items()
         elif request.action_type == ActionType.GET_GAME_DATA_SESSION:
-            result = await self.get_game_session_data()
+            result = await self.get_game_session_data(request.session_uuid)
 
         return ProtocolResponse(data=result)
 
@@ -114,31 +115,20 @@ class Server:
 
         return result
 
+    #  Creates account and its dependencies. Then returns account session
+
     async def login_into_account(self, params: AccountLoginRequest) -> GameSessionData:
         async with self.db.sessionmaker.begin() as session:
-            account = await self.db.find_account_by_nickname(session, params.nickname)
-            if not account:
-                account = await self.db.create_account(session, params.nickname)
-                await self.db.create_balance_record_for_account(session, account)
-                random_balance = round(
-                    random.uniform(
-                        float(self._settings.min_amount_of_money),
-                        float(self._settings.max_amount_of_money)),
-                    2
-                )
-                await self.db.add_balance_to_account(session, account, random_balance)
-
-            balance = await self.db.get_account_balance(session, account)
+            account = await self.db.find_or_create_account(
+                session,
+                params.nickname,
+                float(self._settings.min_amount_of_money),
+                float(self._settings.max_amount_of_money)
+            )
             account_session = await self.db.create_account_session(session, account)
-            owned_shop_items = await self.db.get_user_owned_items_list(session, account)
 
-        return GameSessionData(
-            account_uuid=account.uuid,
-            nickname=account.nickname,
-            balance=balance.balance,
-            session_uuid=account_session.uuid,
-            owned_items=owned_shop_items
-        )
+        return await self.get_game_session_data(account_session.uuid)
+
 
     async def get_game_session_data(self, session_uuild: uuid.UUID) -> GameSessionData:
         async with self.db.sessionmaker() as session:
@@ -146,18 +136,22 @@ class Server:
             balance = await self.db.get_account_balance(session, account)
             owned_shop_items = await self.db.get_user_owned_items_list(session, account)
 
+        result = ShopItemList([])
+        for shop_item in owned_shop_items:
+            result.append(shop_item.to_shop_item_model())
+
         return GameSessionData(
             account_uuid=account.uuid,
             nickname=account.nickname,
             balance=balance.balance,
             session_uuid=session_uuild,
-            owned_items=owned_shop_items
+            owned_items=result
         )
 
     async def logout_from_account(self, session_uuid: uuid.UUID) -> BasicResponse:
         async with self.db.sessionmaker.begin() as session:
             await self.db.delete_account_session(session, session_uuid)
-        return BasicResponse()
+        return BasicResponse(status="ok")
 
     async def buy_shop_item(self, session_uuid: uuid.UUID, params: ItemRequest) -> BasicResponse:
         async with self.db.sessionmaker.begin() as session:
@@ -170,7 +164,7 @@ class Server:
             await self.db.add_item_ownership_to_account(session, account, shop_item)
             await self.db.substitute_balance_from_account(session, account, shop_item.price)
 
-        return BasicResponse()
+        return BasicResponse(status="ok")
 
     async def sell_shop_item(self, session_uuid: uuid.UUID, params: ItemRequest) -> BasicResponse:
         async with self.db.sessionmaker.begin() as session:
@@ -180,11 +174,11 @@ class Server:
             await self.db.remove_item_ownership_of_account(session, account, shop_item)
             await self.db.add_balance_to_account(session, account, shop_item.price)
 
-        return BasicResponse()
+        return BasicResponse(status="ok")
 
     async def change_account_balace(self, session_uuid: uuid.UUID, new_balance: float) -> BasicResponse:
         async with self.db.sessionmaker.begin() as session:
             account = await self.db.find_account_by_session(session, session_uuid)
             await self.db.set_balance_for_account(session, account, new_balance)
 
-        return BasicResponse()
+        return BasicResponse(status="ok")
