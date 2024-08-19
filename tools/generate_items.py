@@ -44,7 +44,7 @@ def main():
     item_list = generate(args.count, args.start_price, args.end_price)
 
     print(item_list.model_dump_json())
-    with open("shop_items.json", "w") as f:
+    with open("shop_items.json", "w", encoding="utf-8") as f:
         f.write(item_list.model_dump_json(indent=2))
 
 if __name__ == "__main__":
