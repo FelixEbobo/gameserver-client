@@ -29,6 +29,9 @@ test = [
   "pytest-asyncio",
   "PyHamcrest"
 ]
+all = [
+  "game-clientserver[server,test]",
+]
 
 
 ## Pytest
