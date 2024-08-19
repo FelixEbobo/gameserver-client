@@ -1,6 +1,8 @@
 import base64
 from typing import Optional, Union, Dict, Any
 import json
+import uuid
+from decimal import Decimal
 
 from pydantic import BaseModel, UUID4
 
@@ -20,10 +22,21 @@ class Protocol:
     CHUNK_SIZE = 64
 
     @staticmethod
-    def parse(data: bytes) -> Dict[str, Any]:
-        return json.loads(base64.b64decode(data))
+    def parse(data: bytes) -> bytes:
+        return base64.b64decode(data)
 
     @staticmethod
     def construct(data: Dict[str, Any]) -> bytes:
-        msg = base64.b64encode(json.dumps(data).encode("utf-8"))
+        class JSONEnconderMonkeyPatch(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, uuid.UUID):
+                    # if the obj is uuid, we simply return the value of uuid
+                    return obj.hex
+                if isinstance(obj, Decimal):
+                    # if the obj is uuid, we simply return the value of uuid
+                    obj: Decimal
+                    return float(obj)
+                return json.JSONEncoder.default(self, obj)
+
+        msg = base64.b64encode(json.dumps(data, cls=JSONEnconderMonkeyPatch).encode("utf-8"))
         return f"{len(msg):<{Protocol.HEADER_SIZE}}HEADER".encode("utf-8") + msg

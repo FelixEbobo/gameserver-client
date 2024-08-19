@@ -43,6 +43,7 @@ class DBManager:
         else:
             item = tables.DBShopItem(name=item.name, type=item.type, price=item.price)
             session.add(item)
+            await session.flush()
 
     async def get_shop_items_list(self, session: AsyncSession) -> List[tables.DBShopItem]:
         result: List[tables.DBShopItem] = []
@@ -70,7 +71,8 @@ class DBManager:
 
     async def create_account_session(self, session: AsyncSession, account: tables.DBAccount) -> tables.DBAccountSession:
         account_session = tables.DBAccountSession(account=account.id)
-        await session.add(account_session)
+        session.add(account_session)
+        await session.flush()
         await session.refresh(account_session)
 
         return account_session
@@ -89,14 +91,16 @@ class DBManager:
             raise errors.AccountAlreadyExists(nickname)
 
         new_account = tables.DBAccount(nickname=nickname)
-        await session.add(new_account)
+        session.add(new_account)
+        await session.flush()
         await session.refresh(new_account)
 
         return new_account
 
     async def create_balance_record_for_account(self, session: AsyncSession, account: tables.DBAccount) -> tables.DBAccountBalance:
         balance = tables.DBAccountBalance(account=account.id)
-        await session.add(balance)
+        session.add(balance)
+        await session.flush()
         await session.refresh(balance)
         
         return balance
@@ -130,7 +134,7 @@ class DBManager:
         if not account_balance:
             raise errors.AccountBalanceNotFound(account.id)
 
-        account_balance.balance = account_balance.balance + amount
+        account_balance.balance = float(account_balance.balance) + amount
         await session.flush()
 
     async def substitute_balance_from_account(self, session: AsyncSession, account: tables.DBAccount, amount: float) -> None:
@@ -139,10 +143,19 @@ class DBManager:
         if not account_balance:
             raise errors.AccountBalanceNotFound(account.id)
 
-        if account_balance.balance:
+        if account_balance.balance < amount:
             raise errors.NotEnoughFundsInAccountBalance(account.id)
 
-        account_balance.balance = account_balance.balance - amount
+        account_balance.balance = float(account_balance.balance) - amount
+        await session.flush()
+
+    async def set_balance_for_account(self, session: AsyncSession, account: tables.DBAccount, amount: float) -> None:
+        assert amount >= 0
+        account_balance = (await session.execute(select(tables.DBAccountBalance).where(tables.DBAccountBalance.account == account.id))).scalar()
+        if not account_balance:
+            raise errors.AccountBalanceNotFound(account.id)
+
+        account_balance.balance = amount
         await session.flush()
 
     # Work with item ownership
@@ -158,7 +171,8 @@ class DBManager:
             raise errors.AccountAlreadyOwnsItem(shop_item.name)
 
         shop_item2account = tables.DBShopItem2Account(account=account.id, shop_item=shop_item.id)
-        await session.add(shop_item2account)
+        session.add(shop_item2account)
+        await session.flush()
 
     async def remove_item_ownership_of_account(self, session: AsyncSession, account: tables.DBAccount, shop_item: tables.DBShopItem) -> None:
         shop_item2account = (await session.execute(

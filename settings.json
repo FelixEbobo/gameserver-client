@@ -1,4 +1,5 @@
 {
+  "host": "127.0.0.1",
   "port": 3233,
   "items_path": "/Users/aansimov/pets/gameserver-client/gameserver/data/shop_items.json",
   "db_settings": {
@@ -8,6 +9,6 @@
     "user": "root",
     "password": "q1w2e3r4"
   },
-  "min_amount_of_money": 10,
+  "min_amount_of_money": 70,
   "max_amount_of_money": 124
 }

@@ -36,6 +36,14 @@ class UnknownActionType(BaseGameServerException):
             value
         )
 
+class UnknownServerError(BaseGameServerException):
+    def __init__(self, value: Optional[str] = None):
+        super().__init__(
+            "Unknown error on server has happened",
+            1003,
+            value
+        )
+
 # 51 - 100 - Account errors
 
 class AccountAlreadyExists(BaseGameServerException):

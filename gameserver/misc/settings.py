@@ -1,8 +1,9 @@
 from decimal import Decimal
 from pydantic import BaseModel, Field
-from db.settings import DBSettings
+from gameserver.db import DBSettings
 
 class ServerSettings(BaseModel):
+    host: str
     port: int = Field(gt=0)
     items_path: str
     db_settings: DBSettings

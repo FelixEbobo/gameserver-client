@@ -1,6 +1,6 @@
 from decimal import Decimal
 import enum
-from typing import List, Optional, Generator, Union, Literal
+from typing import List, Optional, Generator, Union, Literal, Dict
 
 from gameserver.misc.errors import BaseGameServerException
 from pydantic import BaseModel, RootModel, Field, UUID4
@@ -23,12 +23,12 @@ class AccountLoginRequest(BaseModel):
 
 # Responses
 
-class ShopItemType(enum.Enum):
+class ShopItemType(str, enum.Enum):
     SHIP = "ship"
     EQUIPMENT = "equipment"
 
 class ShopItem(BaseModel):
-    uuid: Optional[UUID4]
+    uuid: Optional[UUID4] = Field(default=None)
     name: str
     price: int
     type: ShopItemType
@@ -39,11 +39,17 @@ class ShopItemList(RootModel):
     def append(self, el: ShopItem) -> None:
         self.root.append(el)
 
+    def as_dict(self) -> Dict[str, ShopItem]:
+        result = {}
+        for shop_item in self.root:
+            result[str(shop_item.uuid)] = shop_item
+        return result
+
     def __iter__(self) -> Generator[ShopItem, None, None]:
         yield from self.root
 
 class BasicResponse(BaseModel):
-    status: Literal["ok"]
+    status: Literal["ok"] = Field(default="ok")
 
 class GameSessionData(BaseModel):
     account_uuid: UUID4
@@ -64,3 +70,7 @@ class ErrorResponse(BaseModel):
             message=exception.message,
             value=exception.value
         )
+
+    def __str__(self) -> str:
+        value = " " + self.value if self.value else ""
+        return f"Error code: {self.error_code}. Message: {self.message}{value}"

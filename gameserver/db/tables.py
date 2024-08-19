@@ -60,7 +60,7 @@ class DBAccountBalance(BaseTable):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     account: Mapped[int] = mapped_column(ForeignKey(DBAccount.id), unique=True)
-    balance: Mapped[float] = mapped_column(Numeric(precision=2), default=.0)
+    balance: Mapped[float] = mapped_column(Numeric(precision=10, scale=2, asdecimal=False), default=.0)
 
 
 class DBShopItem2Account(BaseTable):

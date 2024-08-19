@@ -1,11 +1,11 @@
 import logging
 import asyncio
-from typing import AsyncGenerator
+from typing import AsyncGenerator, Dict, Any
 from io import BytesIO
 from pydantic import ValidationError
 
 from gameserver.misc.models import ErrorResponse
-from gameserver.misc.protocol import Protocol, ProtocolRequest, ProtocolResponse
+from gameserver.misc.protocol import Protocol
 from gameserver.misc import errors
 
 class Connection:
@@ -21,6 +21,8 @@ class Connection:
         while True:
             msg = await self.reader.read(Protocol.CHUNK_SIZE)
             if self.reader.at_eof():
+                self.writer.write_eof()
+                await self.writer.drain()
                 break
             logging.debug("Read chunk")
 
@@ -41,14 +43,17 @@ class Connection:
             readlen = 0
             msglen = 0
             try:
-                parsed_data = Protocol.parse(message.read())
-                yield ProtocolRequest.model_validate(parsed_data)
+                parsed_bytes = Protocol.parse(message.read())
+                yield parsed_bytes
             except ValidationError:
                 await self.send_bad_request()
+            message.truncate(0)
 
     async def close(self) -> None:
+        self.reader.feed_eof()
         self.writer.write_eof()
         await self.writer.drain()
+        self.writer.close()
         await self.writer.wait_closed()
 
     async def send_bad_request(self) -> None:
@@ -56,6 +61,6 @@ class Connection:
         self.writer.write(Protocol.construct(error.model_dump()))
         await self.writer.drain()
 
-    async def send(self, response: ProtocolResponse) -> None:
-        self.writer.write(Protocol.construct(response.model_dump()))
+    async def send(self, response: bytes) -> None:
+        self.writer.write(response)
         await self.writer.drain()

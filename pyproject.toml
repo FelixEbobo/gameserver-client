@@ -12,9 +12,6 @@ authors = [
 
 dependencies = [
   "pydantic==2.7.4",
-  "sqlalchemy[aiomysql]",
-  "sqlalchemy[mypy]",
-  "colorama",
   "cryptography"
 ]
 
@@ -25,6 +22,20 @@ dev = [
     "pylint",
     "black==23.3.0",
 ]
+server = [
+  "sqlalchemy[aiomysql]",
+]
+test = [
+  "pytest-asyncio",
+  "PyHamcrest"
+]
+
+
+## Pytest
+
+[tool.pytest.ini_options]
+log_cli = true
+
 
 ## Pylint
 

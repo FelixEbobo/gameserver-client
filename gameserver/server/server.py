@@ -41,7 +41,7 @@ class Server:
         await self.add_new_data_to_items(shop_items)
 
         # Open Socket to serve connections
-        self._socket = await asyncio.start_server(self.handle_client, "localhost", 5555)
+        self._socket = await asyncio.start_server(self.handle_client, self._settings.host, self._settings.port)
         await self._socket.start_serving()
 
         return self
@@ -64,19 +64,21 @@ class Server:
         self._sessions.append(conn)
 
         async for message in conn.listen():
-            logging.debug("Got new message")
-            request_json = Protocol.parse(message)
-            request = ProtocolRequest.model_validate(request_json)
+            logging.debug("Got a new message")
+            logging.debug(message)
+            request = ProtocolRequest.model_validate_json(message)
+            logging.debug(request)
             try:
                 response = await self.action_dispatcher(request)
             except errors.BaseGameServerException as e:
                 response = ErrorResponse.from_base_gameserver_exception(e)
 
-            await conn.send(response)
+            await conn.send(Protocol.construct(response.model_dump()))
 
         self._sessions.remove(conn)
 
     async def action_dispatcher(self, request: ProtocolRequest) -> ProtocolResponse:
+        logging.info("Dispatching action %s", request.action_type.value)
         if request.action_type == ActionType.LOGIN:
             result = await self.login_into_account(request.data)
         elif request.action_type == ActionType.LOGOUT:
@@ -90,12 +92,23 @@ class Server:
         elif request.action_type == ActionType.GET_GAME_DATA_SESSION:
             result = await self.get_game_session_data()
 
-        return Protocol.construct(ProtocolResponse(data=result))
+        return ProtocolResponse(data=result)
 
     async def get_all_shop_items(self) -> ShopItemList:
+        logging.info("Begin retrieving all shop items")
         async with self.db.sessionmaker() as session:
             shop_item_list = await self.db.get_shop_items_list(session)
-        result: ShopItemList = []
+        result = ShopItemList([])
+        for shop_item in shop_item_list:
+            result.append(shop_item.to_shop_item_model())
+
+        return result
+
+    async def get_owned_shop_items(self, sessio_uuid: uuid.UUID) -> ShopItemList:
+        async with self.db.sessionmaker() as session:
+            account = await self.db.find_account_by_session(session, sessio_uuid)
+            shop_item_list = await self.db.get_user_owned_items_list(session, account)
+        result = ShopItemList([])
         for shop_item in shop_item_list:
             result.append(shop_item.to_shop_item_model())
 
@@ -107,15 +120,17 @@ class Server:
             if not account:
                 account = await self.db.create_account(session, params.nickname)
                 await self.db.create_balance_record_for_account(session, account)
-                random_balance = round(random.uniform(self._settings.min_amount_of_money, self._settings.max_amount_of_money), 2)
+                random_balance = round(
+                    random.uniform(
+                        float(self._settings.min_amount_of_money),
+                        float(self._settings.max_amount_of_money)),
+                    2
+                )
                 await self.db.add_balance_to_account(session, account, random_balance)
-
-                await session.commit()
 
             balance = await self.db.get_account_balance(session, account)
             account_session = await self.db.create_account_session(session, account)
             owned_shop_items = await self.db.get_user_owned_items_list(session, account)
-
 
         return GameSessionData(
             account_uuid=account.uuid,
@@ -129,19 +144,18 @@ class Server:
         async with self.db.sessionmaker() as session:
             account = await self.db.find_account_by_session(session, session_uuild)
             balance = await self.db.get_account_balance(session, account)
-            account_session = await self.db.create_account_session(session, account)
             owned_shop_items = await self.db.get_user_owned_items_list(session, account)
 
         return GameSessionData(
             account_uuid=account.uuid,
             nickname=account.nickname,
             balance=balance.balance,
-            session_uuid=account_session.uuid,
+            session_uuid=session_uuild,
             owned_items=owned_shop_items
         )
 
     async def logout_from_account(self, session_uuid: uuid.UUID) -> BasicResponse:
-        async with self.db.sessionmaker() as session:
+        async with self.db.sessionmaker.begin() as session:
             await self.db.delete_account_session(session, session_uuid)
         return BasicResponse()
 
@@ -156,8 +170,6 @@ class Server:
             await self.db.add_item_ownership_to_account(session, account, shop_item)
             await self.db.substitute_balance_from_account(session, account, shop_item.price)
 
-            await session.commit()
-
         return BasicResponse()
 
     async def sell_shop_item(self, session_uuid: uuid.UUID, params: ItemRequest) -> BasicResponse:
@@ -168,6 +180,11 @@ class Server:
             await self.db.remove_item_ownership_of_account(session, account, shop_item)
             await self.db.add_balance_to_account(session, account, shop_item.price)
 
-            await session.commit()
+        return BasicResponse()
+
+    async def change_account_balace(self, session_uuid: uuid.UUID, new_balance: float) -> BasicResponse:
+        async with self.db.sessionmaker.begin() as session:
+            account = await self.db.find_account_by_session(session, session_uuid)
+            await self.db.set_balance_for_account(session, account, new_balance)
 
         return BasicResponse()
