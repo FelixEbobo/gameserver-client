@@ -63,3 +63,25 @@ pytest -k "some pattern"
 pytest -k "test_validate" #  You can specify here function name
 pytest -k "test_client.py" #  Or a filename
 ```
+
+# About internal packages
+
+## DB
+
+Provides functions to work with DB. Based on SQLAlchemy. Consists of:
+- manager.py - provides DBManager, which is responsible for all low-level database operations
+- settings.py - provides DBSettings model, which stores configuration options for database
+- tables.py - provides all DB tables models
+
+## Server/Client
+
+Just a package aliases for Server/Client classes
+
+## Misc
+
+Provides some other utilities, which could be categorised in ther packages, but it would look like every file has its directory. Consists of:
+- connection.py - provides interface to read and write data using asyncio StreamReader and StreamWriter
+- protocol.py - defines the protocol, using which client and server communicate
+- models.py - some pydantic models to make data look more structured
+- errors.py - defines all errors of gameserver-client
+- settings.py - defines ServerSettings, which is used by Server class

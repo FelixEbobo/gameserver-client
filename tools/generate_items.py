@@ -1,35 +1,18 @@
 import argparse
-from enum import Enum
 import random
-from typing import List
 
-from pydantic import BaseModel, RootModel
-
-class ShopItemType(str, Enum):
-    SHIP = "ship"
-    EQUIPMENT = "equipment"
-
-class ShopItem(BaseModel):
-    name: str
-    price: int
-    type: ShopItemType
-
-class ShopItemList(RootModel):
-    root: List[ShopItem]
-
-    def append(self, el: ShopItem) -> None:
-        self.root.append(el)
+from gameserver.misc.models import ShopItem, ShopItemList, ShopItemType
 
 
 def generate(count: int, start_price: int, end_price: int) -> ShopItemList:
     result = ShopItemList([])
     ship_names = []
     equipment_names = []
-    with open("ship_names.txt", "r")as f:
+    with open("ship_names.txt", "r", encoding="utf-8")as f:
         for ship_name in f.readlines():
             ship_names.append(ship_name.rstrip())
 
-    with open("equipment_names.txt", "r") as f:
+    with open("equipment_names.txt", "r", encoding="utf-8") as f:
         for equip_name in f.readlines():
             equipment_names.append(equip_name.rstrip())
 
@@ -61,7 +44,7 @@ def main():
     item_list = generate(args.count, args.start_price, args.end_price)
 
     print(item_list.model_dump_json())
-    with open("shop_items.json", "w") as f:
+    with open("shop_items.json", "w", encoding="utf-8") as f:
         f.write(item_list.model_dump_json(indent=2))
 
 if __name__ == "__main__":

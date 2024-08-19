@@ -1,52 +1,62 @@
 [
   {
-    "name": "whistle",
-    "price": 67,
+    "uuid": null,
+    "name": "safe",
+    "price": 55,
     "type": "equipment"
   },
   {
-    "name": "ice cube",
-    "price": 22,
-    "type": "equipment"
-  },
-  {
-    "name": "Wichita",
-    "price": 82,
-    "type": "ship"
-  },
-  {
-    "name": "wire",
-    "price": 13,
-    "type": "equipment"
-  },
-  {
-    "name": "washcloth",
-    "price": 38,
-    "type": "equipment"
-  },
-  {
-    "name": "AL Sov. Rossiya",
-    "price": 27,
-    "type": "ship"
-  },
-  {
-    "name": "Chkalov",
-    "price": 16,
-    "type": "ship"
-  },
-  {
-    "name": "Black",
-    "price": 26,
-    "type": "ship"
-  },
-  {
-    "name": "Adriatico",
-    "price": 33,
-    "type": "ship"
-  },
-  {
-    "name": "bench",
+    "uuid": null,
+    "name": "La Galissonnière",
     "price": 74,
+    "type": "ship"
+  },
+  {
+    "uuid": null,
+    "name": "Marblehead",
+    "price": 64,
+    "type": "ship"
+  },
+  {
+    "uuid": null,
+    "name": "picture frame",
+    "price": 52,
+    "type": "equipment"
+  },
+  {
+    "uuid": null,
+    "name": "Marseille",
+    "price": 43,
+    "type": "ship"
+  },
+  {
+    "uuid": null,
+    "name": "Chumphon",
+    "price": 20,
+    "type": "ship"
+  },
+  {
+    "uuid": null,
+    "name": "bottle of syrup",
+    "price": 65,
+    "type": "equipment"
+  },
+  {
+    "uuid": null,
+    "name": "mobile phone",
+    "price": 37,
+    "type": "equipment"
+  },
+  {
+    "uuid": null,
+    "name": "mirror",
+    "price": 26,
+    "type": "equipment"
+  },
+  {
+    "uuid": null,
+    "name": "spectacles",
+    "price": 9,
     "type": "equipment"
   }
 ]
