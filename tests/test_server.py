@@ -8,9 +8,11 @@ from gameserver.misc.models import AccountLoginRequest, ItemRequest, GameSession
 from gameserver.misc.errors import AccountSessionNotFound, BaseGameServerException, NotEnoughFundsInAccountBalance, AccountAlreadyOwnsItem, AccountDoesntOwnItem
 from gameserver.misc.protocol import Protocol, ProtocolResponse
 
+settings_path = "tests/settings.json"
+
 @pytest.mark.asyncio
 async def test_getting_login():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         login_request = AccountLoginRequest(nickname="rickastley")
 
         game_session_data_1 = await server.login_into_account(login_request)
@@ -28,7 +30,7 @@ async def test_getting_login():
 
 @pytest.mark.asyncio
 async def test_logout():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         login_request = AccountLoginRequest(nickname="rickastley")
 
         game_session_data = await server.login_into_account(login_request)
@@ -40,14 +42,14 @@ async def test_logout():
 
 @pytest.mark.asyncio
 async def test_get_all_item_list():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         shop_item_list = await server.get_all_shop_items()
         Protocol.construct(ProtocolResponse(data=shop_item_list).model_dump())
 
 
 @pytest.mark.asyncio
 async def test_buy_item():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         login_request = AccountLoginRequest(nickname="rickastley")
 
         game_session_data = await server.login_into_account(login_request)
@@ -80,7 +82,7 @@ async def test_buy_item():
 
 @pytest.mark.asyncio
 async def test_sell_item():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         login_request = AccountLoginRequest(nickname="rickastley")
 
         game_session_data = await server.login_into_account(login_request)

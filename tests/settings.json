@@ -8,7 +8,7 @@
     "port": 3306,
     "user": "root",
     "password": "q1w2e3r4",
-    "is_test_env": false
+    "is_test_env": true
   },
   "min_amount_of_money": 70,
   "max_amount_of_money": 124

@@ -28,7 +28,8 @@ class DBManager:
             echo=False,
         )
         async with self._engine.begin() as conn:
-            await conn.run_sync(tables.BaseTable.metadata.drop_all)
+            if self.settings.is_test_env:
+                await conn.run_sync(tables.BaseTable.metadata.drop_all)
             await conn.run_sync(tables.BaseTable.metadata.create_all)
 
         self.sessionmaker = async_sessionmaker(self._engine, expire_on_commit=False, class_=AsyncSession)

@@ -1,17 +1,16 @@
 import logging
 import pytest
 import pytest_asyncio
-from hamcrest import assert_that, not_none, none, equal_to
+from hamcrest import assert_that, not_none, none
 
 from gameserver.server import Server
 from gameserver.client import Client
 
-from gameserver.misc.protocol import Protocol, ProtocolRequest
-from gameserver.misc.models import ActionType, AccountLoginRequest
+settings_path = "tests/settings.json"
 
 @pytest.mark.asyncio
 async def test_getting_login():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         async with Client(server._settings.host, server._settings.port) as client:
             nickname = "rickastley"
 
@@ -20,7 +19,7 @@ async def test_getting_login():
 
 @pytest.mark.asyncio
 async def test_logout():
-    async with Server() as server:
+    async with Server(settings_path) as server:
         async with Client(server._settings.host, server._settings.port) as client:
             nickname = "rickastley"
 
@@ -37,7 +36,7 @@ async def test_logout():
 async def test_get_all_items(caplog):
     caplog.set_level(logging.WARNING) #  Change if you need more detailed logging
 
-    async with Server() as server:
+    async with Server(settings_path) as server:
         async with Client(server._settings.host, server._settings.port) as client:
             nickname = "rickastley"
 

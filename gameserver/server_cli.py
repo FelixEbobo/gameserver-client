@@ -20,7 +20,7 @@ def parse_args() -> argparse.Namespace:
 
 async def main():
     args = parse_args()
-    async with Server():
+    async with Server(args.settings_path):
         loop = asyncio.get_running_loop()
 
         # Dirty hack to run forever, as we don't have other work than to wait until server shutdown
