@@ -87,6 +87,8 @@ async def buy_item(client: Client):
         return
     client.game_session.owned_items.append(shop_item_list.at(shop_item_index))
 
+    print("Successfully bought item!")
+
 
 async def sell_item(client: Client):
     # Refresh to get actual information at the moment
@@ -107,11 +109,14 @@ async def sell_item(client: Client):
 
         shop_item_index = int(buy_option) - 1
         break
+    print()
 
     response = await client.send_sell_request(owned_items.at(shop_item_index).uuid)
     if check_if_error_recieved(response):
         return
     owned_items.remove(owned_items.at(shop_item_index))
+
+    print("Successfully sold item!")
 
 
 async def process_menu_option(client: Client, menu_option: int):
@@ -152,12 +157,12 @@ async def main_menu_loop(client: Client):
 
         menu_option = input("Your choise: ")
         if not menu_option.isdigit() or int(menu_option) < 1 or int(menu_option) > 7:
-            input("Your selection should be number within 1-6 range. Press Enter to continue")
+            input("Your selection should be number within 1-7 range. Press Enter to continue")
             continue
 
-        menu_option_int = int(menu_option)
-        await process_menu_option(client, menu_option_int)
-        if menu_option_int == 7:
+        print()
+        await process_menu_option(client, int(menu_option))
+        if int(menu_option) == 7:
             break
 
 
@@ -179,7 +184,7 @@ def parse_args() -> argparse.Namespace:
 
 
 async def main(args: argparse.Namespace):
-    logging.info("Welcome to basic Ship Economy game")
+    print("Welcome to basic Ship Economy game")
     async with Client(args.host, args.port) as client:
         nickname = input("Please, provide nickname to login into an account: ")
 
@@ -190,5 +195,5 @@ async def main(args: argparse.Namespace):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     asyncio.run(main(parse_args()))

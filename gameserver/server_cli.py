@@ -1,10 +1,25 @@
+import argparse
 import asyncio
 import logging
 import signal
 from gameserver.server import Server
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--settings-path",
+        dest="settings_path",
+        type=str,
+        default="settings.json",
+        help="Path to the server settings",
+    )
+
+    return parser.parse_args()
+
+
 async def main():
+    args = parse_args()
     async with Server():
         loop = asyncio.get_running_loop()
 

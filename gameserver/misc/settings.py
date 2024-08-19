@@ -12,12 +12,12 @@ class ServerSettings(BaseModel):
     max_amount_of_money: Decimal = Field(gt=0.0, decimal_places=2)
 
 
-def load_settings() -> ServerSettings:
-    with open("settings.json", "r", encoding="utf-8") as f:
+def load_settings(settings_path: str) -> ServerSettings:
+    with open(settings_path, "r", encoding="utf-8") as f:
         return ServerSettings.model_validate_json(f.read())
 
 
-def validate_settings() -> ServerSettings:
-    settings = load_settings()
+def validate_settings(settings_path: str) -> ServerSettings:
+    settings = load_settings(settings_path)
     assert settings.max_amount_of_money >= settings.min_amount_of_money
     return settings

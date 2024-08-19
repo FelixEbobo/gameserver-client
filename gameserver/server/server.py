@@ -20,8 +20,8 @@ from gameserver.misc.connection import Connection
 
 
 class Server:
-    def __init__(self) -> None:
-        self._settings = validate_settings()
+    def __init__(self, settings_path = "settings.json") -> None:
+        self._settings = validate_settings(settings_path)
         self._sessions: List[Connection] = []
         self._socket = None
 
